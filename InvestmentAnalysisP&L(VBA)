@@ -1,0 +1,24 @@
+Sub ProfitForm()
+
+Sheets("Trade Information").Select
+Range("Y5:Y42").ClearContents
+
+For x = 0 To Cells(Rows.Count, 24).End(xlUp).Row
+    For i = 0 To Cells(Rows.Count, 4).End(xlUp).Row
+        If (Cells(5 + x, 24) = Cells(6 + i, 4)) Then 'if profit loss ticker matches the ticker in the log on that line
+            Cells(6 + i, 4).Select
+            If (ActiveCell.Offset(0, 1).Value = "Buy" Or ActiveCell.Offset(0, 1).Value = "Cover") Then 'if profit log line reads "buy"
+                Cells(5 + x, 25) = Cells(5 + x, 25) - ActiveCell.Offset(0, 4).Value 'profit/loss value line = total value of that line's trade + profit/loss value line
+                Cells(6 + i, 4).Offset(1, 0).Select
+            ElseIf (ActiveCell.Offset(0, 1).Value = "Sell" Or ActiveCell.Offset(0, 1).Value = "Short") Then 'if profit log line reads "sell"
+                Cells(5 + x, 25) = Cells(5 + x, 25) + ActiveCell.Offset(0, 4).Value 'profit/loss value line = total value of that line's trade - profit/loss value line
+            End If
+        Else
+            Cells(6 + i, 4).Offset(1, 0).Select 'if profit loss ticker does not match ticker in the log on that line, go to next line
+        End If
+    Next i
+Next x
+
+Range("Y5").Select
+
+End Sub
