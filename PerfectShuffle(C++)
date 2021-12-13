@@ -1,0 +1,106 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+void printCards(string arr[])
+{
+
+    //prints spades    
+    for ( int i = 0; i < 13; i++)
+    {
+        cout << arr[i];
+        if(i<12)
+        {
+            cout << ", ";
+        }
+
+    }
+    cout << "" << endl;
+
+    //prints clubs
+    for ( int i = 13; i < 26; i++)
+    {
+        cout << arr[i];
+        if(i<25)
+        {
+            cout << ", ";
+        }
+    }
+    cout << "" << endl;
+
+    //prints diamonds
+    for ( int i = 26; i < 39; i++)
+    {
+        cout << arr[i];
+        if(i<38)
+        {
+            cout << ", ";
+        }
+    }
+    cout << "" << endl;
+
+    //prints hearts
+    for ( int i = 39; i < 52; i++)
+    {
+        cout << arr[i];
+        if(i<51)
+        {
+            cout << ", ";
+        }
+    }
+    cout << "" << endl;
+
+}
+
+string shuffleCards(string arr1[], int num)
+{
+    string arr2[52];
+
+    for(int d = 0; d < num; d++)
+    {
+        int x=0;
+
+        //Shuffles the cards in the first array into a second array
+        for(int a = 0; a < 26; a++)
+        {
+            arr2[51-x]=arr1[51-a];
+            arr2[50-x]=arr1[25-a];
+            x=x+2;
+        }
+
+        //copies the second array to the first array to get sent back to main
+        for (int c = 0; c < 52; c++)
+        {
+            arr1[c]=arr2[c];
+        }
+
+    }
+    return *arr1;
+}
+
+int main()
+{
+    //skips a line to make it look nicer
+    cout << " " << endl;
+    cout << " " << endl;
+
+    //makes the deck of cards
+    string cards[52] = {"SA", "SK", "SQ", "SJ", "S10", "S9", "S8", "S7", "S6", "S5", "S4", "S3", "S2", "CA", "CK", "CQ", "CJ", "C10", "C9", "C8", "C7", "C6", "C5", "C4", "C3", "C2", "DA", "DK", "DQ", "DJ", "D10", "D9", "D8", "D7", "D6", "D5", "D4", "D3", "D2", "HA", "HK", "HQ", "HJ", "H10", "H9", "H8", "H7", "H6", "H5", "H4", "H3", "H2"};
+
+    //asks how many times you want the deck to be shuffled
+    int numOfShuffles;
+    cout << "How many times do you want the deck to be shuffled?" << endl;
+    cin >> numOfShuffles;
+
+    //Perfectly shuffles the deck as many times as you told it to
+    shuffleCards(cards, numOfShuffles);
+
+    cout << " " << endl;
+
+    //prints out current order of cards
+    printCards(cards);
+    
+    cout << " " << endl;
+    cout << " " << endl;
+}
