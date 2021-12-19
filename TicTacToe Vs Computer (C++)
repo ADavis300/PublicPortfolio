@@ -1,0 +1,118 @@
+#include <iostream>
+#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+using namespace std;
+
+void displayBoard(string arr[]){
+    cout << endl << "   " << arr[0] << "  |   " << arr[1] << "  |   " << arr[2] << endl;
+    cout << "---------------------" << endl;
+    cout << "   " << arr[3] << "  |   " << arr[4] << "  |   " << arr[5] << endl;
+    cout << "---------------------" << endl;
+    cout << "   " << arr[6] << "  |   " << arr[7] << "  |   " << arr[8] << endl << endl;
+}
+
+bool didWeWin(string arr[]){
+
+    if((arr[0] == "X" && arr[1] == "X" && arr[2] == "X") || (arr[3] == "X" && arr[4] == "X" && arr[5] == "X") || (arr[6] == "X" && arr[7] == "X" && arr[8] == "X") || (arr[0] == "X" && arr[3] == "X" && arr[6] == "X") || (arr[1] == "X" && arr[4] == "X" && arr[7] == "X") || (arr[2] == "X" && arr[5] == "X" && arr[8] == "X") || (arr[0] == "X" && arr[4] == "X" && arr[8] == "X") || (arr[2] == "X" && arr[4] == "X" && arr[6] == "X")){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+}
+
+bool didWeLose(string arr[]){
+
+    if((arr[0] == "O" && arr[1] == "O" && arr[2] == "O") || (arr[3] == "O" && arr[4] == "O" && arr[5] == "O") || (arr[6] == "O" && arr[7] == "O" && arr[8] == "O") || (arr[0] == "O" && arr[3] == "O" && arr[6] == "O") || (arr[1] == "O" && arr[4] == "O" && arr[7] == "O") || (arr[2] == "O" && arr[5] == "O" && arr[8] == "O") || (arr[0] == "O" && arr[4] == "O" && arr[8] == "O") || (arr[2] == "O" && arr[4] == "O" && arr[6] == "O")){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+}
+
+bool didWeDraw(string arr[]){
+
+    if(arr[0] != " " && arr[1] != " " && arr[2] != " " && arr[3] != " " && arr[4] != " " && arr[5] != " " && arr[6] != " " && arr[7] != " " && arr[8] != " " && didWeWin(arr) == false && didWeLose(arr) == false){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+}
+
+void computerInput(string arr[]){
+
+    int randomNum;
+    srand(time(NULL));
+    randomNum = (rand() % 9) + 1;
+
+    while(arr[randomNum] != " "){
+        randomNum = (rand() % 9) + 1;
+    }
+    arr[randomNum] = "O";
+}
+
+void playGame(string arr[]){
+
+    while(didWeWin(arr)==false && didWeLose(arr)==false && didWeDraw(arr)==false){
+
+        cout << endl << endl << "which spot would you like to play?" << endl;
+        int play;
+        cin >> play;
+        if(arr[play-1] == " "){
+            arr[play-1] = "X";
+        }
+        else{
+            cout << "this selection is already taken, try again" << endl;
+            displayBoard(arr);
+            continue;
+        }
+
+        if(arr[0] == " " || arr[1] == " " || arr[2] == " " || arr[3] == " " || arr[4] == " " || arr[5] == " " || arr[6] == " " || arr[7] == " " || arr[8] == " "){
+            computerInput(arr);
+        }
+
+        displayBoard(arr);
+
+    }
+}
+
+int main(){
+    
+    //to play, enter 1-9 when prompted.
+    
+    //creating each slot where an "X" or "O" can go
+    string arr[9];
+    for(int x = 0; x < 9; x++){
+        arr[x] = " ";
+    }
+
+    //displaying blank board at beginning of match
+    displayBoard(arr);
+
+    //user input that hasnt been made yet
+    playGame(arr);
+
+    //win conditions and display
+    if(didWeWin(arr)==true){
+        cout << endl << "you win!" << endl << endl;
+    }
+
+    //lose conditions and display
+    if(didWeLose(arr)==true){
+        cout << endl << "you lose :(" << endl << endl;
+    }
+
+    //draw conditions and display
+    if(didWeDraw(arr)==true){
+        cout << endl << "its a draw" << endl << endl;
+    }
+
+}
