@@ -47,35 +47,137 @@ bool didWeDraw(string arr[]){
 
 }
 
+bool canComLose(string arr[]){
+    
+    if((arr[1] == "X" && arr[2] == "X" && arr[0] == " ") || (arr[6] == "X" && arr[3] == "X" && arr[0] == " ") || (arr[8] == "X" && arr[4] == "X" && arr[0] == " ")){
+        arr[0] = "O";
+        return true;
+    }
+    else if((arr[0] == "X" && arr[2] == "X" && arr[1] == " ") || (arr[4] == "X" && arr[7] == "X" && arr[1] == " ")){
+        arr[1] = "O";
+        return true;
+    }
+    else if((arr[0] == "X" && arr[1] == "X" && arr[2] == " ") || (arr[6] == "X" && arr[4] == "X" && arr[2] == " ") || (arr[8] == "X" && arr[5] == "X" && arr[2] == " ")){
+        arr[2] = "O";
+        return true;
+    }
+    else if((arr[4] == "X" && arr[5] == "X" && arr[3] == " ") || (arr[0] == "X" && arr[6] == "X" && arr[3] == " ")){
+        arr[3] = "O";
+        return true;
+    }
+    else if((arr[0] == "X" && arr[8] == "X" && arr[4] == " ") || (arr[2] == "X" && arr[6] == "X" && arr[4] == " ") || (arr[1] == "X" && arr[7] == "X" && arr[4] == " ")){
+        arr[4] = "O";
+        return true;
+    }
+    else if((arr[2] == "X" && arr[8] == "X" && arr[5] == " ") || (arr[3] == "X" && arr[4] == "X" && arr[5] == " ")){
+        arr[5] = "O";
+        return true;
+    }
+    else if((arr[0] == "X" && arr[3] == "X" && arr[6] == " ") || (arr[7] == "X" && arr[8] == "X" && arr[6] == " ") || (arr[2] == "X" && arr[4] == "X" && arr[6] == " ")){
+        arr[6] = "O";
+        return true;
+    }
+    else if((arr[1] == "X" && arr[4] == "X" && arr[7] == " ") || (arr[6] == "X" && arr[8] == "X" && arr[7] == " ")){
+        arr[7] = "O";
+        return true;
+    }
+    else if((arr[6] == "X" && arr[6] == "X" && arr[8] == " ") || (arr[2] == "X" && arr[5] == "X" && arr[8] == " ") || (arr[0] == "X" && arr[4] == "X" && arr[8] == " ")){
+        arr[8] = "O";
+        return true;
+    }
+    else{
+        return false;
+    }
+
+}
+
+bool canComWin(string arr[]){
+    
+    if((arr[1] == "O" && arr[2] == "0" && arr[0] == " ") || (arr[6] == "O" && arr[3] == "O" && arr[0] == " ") || (arr[8] == "O" && arr[4] == "O" && arr[0] == " ")){
+        arr[0] = "O";
+        return true;
+    }
+    else if((arr[0] == "O" && arr[2] == "O" && arr[1] == " ") || (arr[4] == "O" && arr[7] == "O" && arr[1] == " ")){
+        arr[1] = "O";
+        return true;
+    }
+    else if((arr[0] == "O" && arr[1] == "O" && arr[2] == " ") || (arr[6] == "O" && arr[4] == "O" && arr[2] == " ") || (arr[8] == "O" && arr[5] == "O" && arr[2] == " ")){
+        arr[2] = "O";
+        return true;
+    }
+    else if((arr[4] == "O" && arr[5] == "O" && arr[3] == " ") || (arr[0] == "O" && arr[6] == "O" && arr[3] == " ")){
+        arr[3] = "O";
+        return true;
+    }
+    else if((arr[0] == "O" && arr[8] == "O" && arr[4] == " ") || (arr[2] == "O" && arr[6] == "O" && arr[4] == " ") || (arr[1] == "O" && arr[7] == "O" && arr[4] == " ")){
+        arr[4] = "O";
+        return true;
+    }
+    else if((arr[2] == "O" && arr[8] == "O" && arr[5] == " ") || (arr[3] == "O" && arr[4] == "O" && arr[5] == " ")){
+        arr[5] = "O";
+        return true;
+    }
+    else if((arr[0] == "O" && arr[3] == "O" && arr[6] == " ") || (arr[7] == "O" && arr[8] == "O" && arr[6] == " ") || (arr[2] == "O" && arr[4] == "O" && arr[6] == " ")){
+        arr[6] = "O";
+        return true;
+    }
+    else if((arr[1] == "O" && arr[4] == "O" && arr[7] == " ") || (arr[6] == "O" && arr[8] == "O" && arr[7] == " ")){
+        arr[7] = "O";
+        return true;
+    }
+    else if((arr[6] == "O" && arr[6] == "O" && arr[8] == " ") || (arr[2] == "O" && arr[5] == "O" && arr[8] == " ") || (arr[0] == "O" && arr[4] == "O" && arr[8] == " ")){
+        arr[8] = "O";
+        return true;
+    }
+    else{
+        return false;
+    }
+
+}
+
+int userInput(){
+    cout << endl << endl << "Which spot would you like to play?" << endl;
+    int play;
+    cin >> play;
+
+    return play;
+}
+
 void computerInput(string arr[]){
 
     int randomNum;
     srand(time(NULL));
     randomNum = (rand() % 9) + 1;
 
-    while(arr[randomNum] != " "){
-        randomNum = (rand() % 9) + 1;
+    if(canComWin(arr) == true){
     }
-    arr[randomNum] = "O";
+    else if (canComLose(arr) == true){
+    }
+    else{
+        while(arr[randomNum] != " "){
+            randomNum = (rand() % 9) + 1;
+        }
+        arr[randomNum] = "O";
+    }
 }
 
 void playGame(string arr[]){
 
     while(didWeWin(arr)==false && didWeLose(arr)==false && didWeDraw(arr)==false){
 
-        cout << endl << endl << "which spot would you like to play?" << endl;
         int play;
-        cin >> play;
+        play = userInput();
+
         if(arr[play-1] == " "){
             arr[play-1] = "X";
         }
         else{
-            cout << "this selection is already taken, try again" << endl;
+            cout << endl << "That selection has already been made, try again" << endl;
             displayBoard(arr);
             continue;
         }
 
-        if(arr[0] == " " || arr[1] == " " || arr[2] == " " || arr[3] == " " || arr[4] == " " || arr[5] == " " || arr[6] == " " || arr[7] == " " || arr[8] == " "){
+        if(didWeWin(arr) == false && didWeLose(arr) == false && didWeDraw(arr) == false){    
             computerInput(arr);
         }
 
@@ -85,34 +187,32 @@ void playGame(string arr[]){
 }
 
 int main(){
-    
-    //to play, enter 1-9 when prompted.
-    
     //creating each slot where an "X" or "O" can go
     string arr[9];
     for(int x = 0; x < 9; x++){
         arr[x] = " ";
     }
 
-    //displaying blank board at beginning of match
+    //displaying instructions and blank board at beginning of match
+    cout << endl << "To play, select a number between 1-9. 1 is the top left corner, 9 is the bottom right corner." << endl << "The player is X, the computer is O" << endl << endl << "Good Luck!" << endl;
     displayBoard(arr);
 
-    //user input that hasnt been made yet
+    //game time
     playGame(arr);
 
     //win conditions and display
     if(didWeWin(arr)==true){
-        cout << endl << "you win!" << endl << endl;
+        cout << endl << "You win!" << endl << endl;
     }
 
     //lose conditions and display
     if(didWeLose(arr)==true){
-        cout << endl << "you lose :(" << endl << endl;
+        cout << endl << "You lose :(" << endl << endl;
     }
 
     //draw conditions and display
     if(didWeDraw(arr)==true){
-        cout << endl << "its a draw" << endl << endl;
+        cout << endl << "It's a draw" << endl << endl;
     }
 
 }
