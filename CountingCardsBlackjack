@@ -1,0 +1,484 @@
+import random
+
+#This makes the deck and shuffles it each time the game is played
+deck = ["A","A","A","A","K","K","K","K","Q","Q","Q","Q","J","J","J","J","10","10","10","10","9","9","9","9","8","8","8","8","7","7","7","7","6","6","6","6","5","5","5","5","4","4","4","4","3","3","3","3","2","2","2","2","A","A","A","A","K","K","K","K","Q","Q","Q","Q","J","J","J","J","10","10","10","10","9","9","9","9","8","8","8","8","7","7","7","7","6","6","6","6","5","5","5","5","4","4","4","4","3","3","3","3","2","2","2","2","A","A","A","A","K","K","K","K","Q","Q","Q","Q","J","J","J","J","10","10","10","10","9","9","9","9","8","8","8","8","7","7","7","7","6","6","6","6","5","5","5","5","4","4","4","4","3","3","3","3","2","2","2","2","A","A","A","A","K","K","K","K","Q","Q","Q","Q","J","J","J","J","10","10","10","10","9","9","9","9","8","8","8","8","7","7","7","7","6","6","6","6","5","5","5","5","4","4","4","4","3","3","3","3","2","2","2","2","A","A","A","A","K","K","K","K","Q","Q","Q","Q","J","J","J","J","10","10","10","10","9","9","9","9","8","8","8","8","7","7","7","7","6","6","6","6","5","5","5","5","4","4","4","4","3","3","3","3","2","2","2","2","A","A","A","A","K","K","K","K","Q","Q","Q","Q","J","J","J","J","10","10","10","10","9","9","9","9","8","8","8","8","7","7","7","7","6","6","6","6","5","5","5","5","4","4","4","4","3","3","3","3","2","2","2","2"]
+deck = random.sample(deck,k=len(deck))
+
+def convert_hand_to_value(hand):
+    hand_val=0
+    #Face cards are equal to 10, numbers are their value, aces are 11 unless this would put our value over 21
+    for i in range(len(hand)):
+        if hand[i] == "J":
+            hand_val+=10
+        elif hand[i] == "Q":
+            hand_val+=10
+        elif hand[i] == "K":
+            hand_val+=10
+        elif hand[i] == "A": 
+            hand_val+=11
+        elif hand[i] == "2" or hand[i] == "3" or hand[i] == "4" or hand[i] == "5" or hand[i] == "6" or hand[i] == "7" or hand[i] == "8" or hand[i] == "9" or hand[i] == "10":
+            hand_val+=int(hand[i])
+    
+    #Ace can be used as 1 or 11
+    for i in range(len(hand)):
+        if hand_val > 21:
+            if hand[i] == "A":
+                hand_val-=10
+        
+    return hand_val
+
+def print_cards_all(player, dealer):
+    #prints all cards with dealer face up and total values
+    print("")
+    print("dealer: "+str(dealer)+ "    Total: "+ str(convert_hand_to_value(dealer)))
+    print("player: "+str(player) + "    Total: "+ str(convert_hand_to_value(player)))
+    print("")
+    
+    return
+
+def print_cards_dealer_down(player, dealer):
+    #prints our cards, and the dealers cards (one face up, one face down)
+    print("")
+    print("dealer: ['"+str(dealer[0])+"', 'X']")
+    print("player: "+str(player) + "    Total: "+ str(convert_hand_to_value(player)))
+    print("")
+    
+    return
+
+def print_cards_split_dealer_down(player_deck_1, player_deck_2, dealer):
+    #prints cards whenever player has split their hand with the dealers hand one face down
+    print("")
+    print("dealer: ['"+str(dealer[0])+"', 'X']")
+    print("player (deck 1): "+str(player_deck_1) + "    Total: "+ str(convert_hand_to_value(player_deck_1)))
+    print("player (deck 2): "+str(player_deck_2) + "    Total: "+ str(convert_hand_to_value(player_deck_2)))
+    print("")
+    
+    return
+
+def print_cards_split(player_deck_1, player_deck_2, dealer):
+    #prints all cards when the player has split their hand and the dealer is all face up
+    print("")
+    print("dealer: "+str(dealer)+ "    Total: "+ str(convert_hand_to_value(dealer)))
+    print("player: "+str(player_deck_1) + "    Total: "+ str(convert_hand_to_value(player_deck_1)))
+    print("player: "+str(player_deck_2) + "    Total: "+ str(convert_hand_to_value(player_deck_2)))
+    print("")
+    return
+
+def the_count(player, dealer, count, card):
+    #this tracks the running count of all cards drawn
+    for i in range(len(player)):
+        if player[i] == "2" or player[i] == "3" or player[i] == "4" or player[i] == "5" or player[i] == "6":
+            count+=1
+        elif player[i] == "10" or player[i] == "J" or player[i] == "Q" or player[i] == "K" or player[i] == "A":
+            count-=1
+    for i in range(len(dealer)):
+        if dealer[i] == "2" or dealer[i] == "3" or dealer[i] == "4" or dealer[i] == "5" or dealer[i] == "6":
+            count+=1
+        elif dealer[i] == "10" or dealer[i] == "J" or dealer[i] == "Q" or dealer[i] == "K" or dealer[i] == "A":
+            count-=1
+    
+    return count
+
+def decks_remaining(card):
+    #this calculates the number of decks remaining rounded to nearesr whole number
+    decks_left = round((312/52)-(card/52),0)
+    
+    return decks_left
+
+def win(player, dealer):
+    #if I have less than 21 but I still have more than the dealer
+    if convert_hand_to_value(player)>convert_hand_to_value(dealer) and convert_hand_to_value(player)<=21:
+        return True
+        
+    #if I have less than the dealer, but the dealer busts
+    elif convert_hand_to_value(player)<convert_hand_to_value(dealer) and convert_hand_to_value(dealer)>21:
+        return True
+        
+    return False
+
+def lose(player, dealer):
+    #If I have less than the dealer and the dealer didnt bust
+    if convert_hand_to_value(player)<convert_hand_to_value(dealer) and convert_hand_to_value(dealer)<=21:
+        return True
+        
+    #If I bust
+    elif convert_hand_to_value(player)>21:
+        return True
+    
+    return False
+
+def player_blackjack_check(player, dealer):
+    #If I have blackjack at the beginning of round
+    if convert_hand_to_value(player)==21:
+        print_cards_all(player, dealer)
+        print("Blackjack")
+        print("")
+        print("")
+        return True
+    
+    return False
+
+def dealer_blackjack_check(player, dealer):
+    #If the dealer has a blackjack at the beginning of the round
+    if convert_hand_to_value(dealer)==21:
+        print_cards_all(player, dealer)
+        print("Dealer Blackjack")
+        print("")
+        print("")
+        return True
+    
+    return False
+
+def both_blackjack_check(player, dealer):
+    #If the dealer and I both have a blackjack at the beginning of the round
+    if convert_hand_to_value(player)==21 and convert_hand_to_value(dealer)==21:
+        print_cards_all(player, dealer)
+        print("PUSH")
+        print("")
+        print("")
+        return True
+    
+    return False
+
+    
+def push(player, dealer):
+    #If I have the same as the dealer
+    if convert_hand_to_value(player)==convert_hand_to_value(dealer):
+        return True
+    
+    return False
+
+def bankroll_manager(player, dealer, decision, bankroll, bet):
+    #this controls their players bankroll based on if they won or lost for normal wagers and double downed wagers
+    new_bankroll=bankroll
+    if decision != "3" and win(player, dealer) == True:
+        new_bankroll+=bet
+    elif decision == "3" and win(player, dealer) == True:
+        new_bankroll+=(bet*2)
+    elif decision != "3" and lose(player, dealer) == True:
+        new_bankroll-=bet
+    elif decision == "3" and lose(player, dealer) == True:
+        new_bankroll-=(bet*2)
+    elif push(player, dealer) == True:
+        new_bankroll=bankroll
+    
+    return new_bankroll
+
+def win_or_lose(player, dealer):
+    #win or lose conditions for player
+    if win(player, dealer) == True:
+        print("")
+        print("YOU WIN")
+        print("")
+        print("")
+    if lose(player, dealer) == True:
+        print("")
+        print("YOU LOSE")
+        print("")
+        print("")
+    if push(player, dealer) == True:
+        print("")
+        print("PUSH")
+        print("")
+        print("")
+        
+    return
+
+def win_or_lose_split(player_deck_1, player_deck_2, dealer, decision, bankroll, bet):
+    #this controls wagers and win or lose conditions for when the player has split their hand. this clock of code is for the first hand
+    new_bankroll=bankroll
+    if decision != "3" and win(player_deck_1, dealer) == True:
+        new_bankroll+=bet
+    elif decision == "3" and win(player_deck_1, dealer) == True:
+        new_bankroll+=(bet*2)
+    elif decision != "3" and lose(player_deck_1, dealer) == True:
+        new_bankroll-=bet
+    elif decision == "3" and lose(player_deck_1, dealer) == True:
+        new_bankroll-=(bet*2)
+    elif push(player_deck_1, dealer) == True:
+        new_bankroll=bankroll
+        
+    #this is for the second hand
+    if decision != "3" and win(player_deck_2, dealer) == True:
+        new_bankroll+=bet
+    elif decision == "3" and win(player_deck_2, dealer) == True:
+        new_bankroll+=(bet*2)
+    elif decision != "3" and lose(player_deck_2, dealer) == True:
+        new_bankroll-=bet
+    elif decision == "3" and lose(player_deck_2, dealer) == True:
+        new_bankroll-=(bet*2)
+    elif push(player_deck_2, dealer) == True:
+        new_bankroll=new_bankroll
+    
+    #if player has walked away with more money, thats a win.
+    if new_bankroll>bankroll:
+        print("")
+        print("YOU WIN")
+        print("")
+        print("")
+    #if player has walked away with less money, thats a loss
+    elif new_bankroll<bankroll:
+        print("")
+        print("YOU LOSE")
+        print("")
+        print("")
+    #if player has not won or lost money, thats a push
+    else:
+        print("")
+        print("PUSH")
+        print("")
+        print("")
+        
+    return
+
+def basic_strategy(player, dealer):
+
+    if((player[0]=="A" and player[1]=="A") or (player[0]=="8" and player[1]=="8")):
+        print("basic strategy says split")
+        return
+    elif((convert_hand_to_value(player)==11 and dealer[0]!="A") or (convert_hand_to_value(player)==10 and (dealer[0]!="A" or dealer[0]!="K" or dealer[0]!="Q" or dealer[0]!="J" or dealer[0]!="10")) or (convert_hand_to_value(player)==9 and (dealer[0]=="3" or dealer[0]=="4" or dealer[0]=="5" or dealer[0]=="6")) or ((((player[0]=="A" and player[1]=="7") or (player[0]=="7" and player[1]=="A")) and (dealer[0]=="3" or dealer[0]=="4" or dealer[0]=="5" or dealer[0]=="6"))) and ((((player[0]=="A" and player[1]=="6") or (player[0]=="6" and player[1]=="A")) and (dealer[0]=="3" or dealer[0]=="4" or dealer[0]=="5" or dealer[0]=="6"))) and ((((player[0]=="A" and player[1]=="5") or (player[0]=="5" and player[1]=="A")) and (dealer[0]=="4" or dealer[0]=="5" or dealer[0]=="6"))) and ((((player[0]=="A" and player[1]=="4") or (player[0]=="4" and player[1]=="A")) and (dealer[0]=="4" or dealer[0]=="5" or dealer[0]=="6"))) and ((((player[0]=="A" and player[1]=="3") or (player[0]=="3" and player[1]=="A")) and (dealer[0]=="5" or dealer[0]=="6"))) and ((((player[0]=="A" and player[1]=="2") or (player[0]=="2" and player[1]=="A")) and (dealer[0]=="5" or dealer[0]=="6"))) and (player[0]=="5" and player[1]=="5" and (dealer[0]=="2" or dealer[0]=="3" or dealer[0]=="4" or dealer[0]=="5" or dealer[0]=="6" or dealer[0]=="7" or dealer[0]=="8" or dealer[0]=="9"))):
+        print("basic strategy says double down if possible. if not, hit")
+        return
+    elif((convert_hand_to_value(player)>=17 and (player[0]!="A" or player[1]!="A")) or (convert_hand_to_value(player)>=13 and (dealer[0]=="2" or dealer[0]=="3" or dealer[0]=="4" or dealer[0]=="5" or dealer[0]=="6") and (player[0]!="A" or player[1]!="A")) or (convert_hand_to_value(player)==12 and (dealer[0]=="4" or dealer[0]=="5" or dealer[0]=="6" or dealer[0]=="7")) and (player[0]!="A" or player[1]!="A") or (player[0]=="A" and player[1]=="8") or (player[0]=="8" and player[1]=="A") or (player[0]=="A" and player[1]=="9") or (player[0]=="9" and player[1]=="A") or (player[0]=="A" and player[1]=="7" and dealer[0]=="2") or (player[0]=="7" and player[1]=="A" and dealer[0]=="2") or (player[0]=="A" and player[1]=="7" and dealer[0]=="7") or (player[0]=="7" and player[1]=="A" and dealer[0]=="7") or (player[0]=="A" and player[1]=="7" and dealer[0]=="8") or (player[0]=="7" and player[1]=="A" and dealer[0]=="8") or (player[0]=="10" and player[1]=="10") or (player[0]=="9" and player[1]=="9" and dealer[0]=="7") or (player[0]=="9" and player[1]=="9" and dealer[0]=="10") or (player[0]=="9" and player[1]=="9" and dealer[0]=="J") or (player[0]=="9" and player[1]=="9" and dealer[0]=="Q") or (player[0]=="9" and player[1]=="9" and dealer[0]=="K") or (player[0]=="9" and player[1]=="9" and dealer[0]=="A")):
+        print("basic strategy says stay")
+        return
+    elif(convert_hand_to_value(player)==5 or convert_hand_to_value(player)==6 or convert_hand_to_value(player)==7 or convert_hand_to_value(player)==8 or (convert_hand_to_value(player)==9 and dealer[0]=="2") or (convert_hand_to_value(player)==9 and dealer[0]=="7") or (convert_hand_to_value(player)==9 and dealer[0]=="8") or (convert_hand_to_value(player)==9 and dealer[0]=="9") or (convert_hand_to_value(player)==9 and dealer[0]=="10") or (convert_hand_to_value(player)==9 and dealer[0]=="J") or (convert_hand_to_value(player)==9 and dealer[0]=="Q") or (convert_hand_to_value(player)==9 and dealer[0]=="K") or (convert_hand_to_value(player)==9 and dealer[0]=="A") or (convert_hand_to_value(player)==10 and dealer[0]=="10") or (convert_hand_to_value(player)==10 and dealer[0]=="J") or (convert_hand_to_value(player)==10 and dealer[0]=="Q") or (convert_hand_to_value(player)==10 and dealer[0]=="K") or (convert_hand_to_value(player)==10 and dealer[0]=="A") or (convert_hand_to_value(player)==11 and dealer[0]=="A") or (convert_hand_to_value(player)==12 and dealer[0]=="2") or (convert_hand_to_value(player)==12 and dealer[0]=="3") or (convert_hand_to_value(player)==12 and dealer[0]=="7") or (convert_hand_to_value(player)==12 and dealer[0]=="8") or (convert_hand_to_value(player)==12 and dealer[0]=="9") or (convert_hand_to_value(player)==12 and dealer[0]=="10") or (convert_hand_to_value(player)==12 and dealer[0]=="J") or (convert_hand_to_value(player)==12 and dealer[0]=="Q") or (convert_hand_to_value(player)==12 and dealer[0]=="K") or (convert_hand_to_value(player)==12 and dealer[0]=="A") or (convert_hand_to_value(player)==13 and dealer[0]=="7") or (convert_hand_to_value(player)==13 and dealer[0]=="8") or (convert_hand_to_value(player)==13 and dealer[0]=="9") or (convert_hand_to_value(player)==13 and dealer[0]=="10") or (convert_hand_to_value(player)==13 and dealer[0]=="J") or (convert_hand_to_value(player)==13 and dealer[0]=="Q") or (convert_hand_to_value(player)==13 and dealer[0]=="K") or (convert_hand_to_value(player)==13 and dealer[0]=="A") or (convert_hand_to_value(player)==14 and dealer[0]=="7") or (convert_hand_to_value(player)==14 and dealer[0]=="8") or (convert_hand_to_value(player)==14 and dealer[0]=="9") or (convert_hand_to_value(player)==14 and dealer[0]=="10") or (convert_hand_to_value(player)==14 and dealer[0]=="J") or (convert_hand_to_value(player)==14 and dealer[0]=="Q") or (convert_hand_to_value(player)==14 and dealer[0]=="K") or (convert_hand_to_value(player)==14 and dealer[0]=="A") or (convert_hand_to_value(player)==15 and dealer[0]=="7") or (convert_hand_to_value(player)==15 and dealer[0]=="8") or (convert_hand_to_value(player)==15 and dealer[0]=="9") or (convert_hand_to_value(player)==15 and dealer[0]=="10") or (convert_hand_to_value(player)==15 and dealer[0]=="J") or (convert_hand_to_value(player)==15 and dealer[0]=="Q") or (convert_hand_to_value(player)==15 and dealer[0]=="K") or (convert_hand_to_value(player)==15 and dealer[0]=="A") or (convert_hand_to_value(player)==16 and dealer[0]=="7") or (convert_hand_to_value(player)==16 and dealer[0]=="8") or (convert_hand_to_value(player)==16 and dealer[0]=="9") or (convert_hand_to_value(player)==16 and dealer[0]=="10") or (convert_hand_to_value(player)==16 and dealer[0]=="J") or (convert_hand_to_value(player)==16 and dealer[0]=="Q") or (convert_hand_to_value(player)==16 and dealer[0]=="K") or (convert_hand_to_value(player)==16 and dealer[0]=="A") or \
+        (player[0]=="A" and player[1]=="2" and dealer[0]=="2") or (player[0]=="2" and player[1]=="A" and dealer[0]=="2") or (player[0]=="A" and player[1]=="2" and dealer[0]=="3") or (player[0]=="2" and player[1]=="A" and dealer[0]=="3") or (player[0]=="A" and player[1]=="2" and dealer[0]=="4") or (player[0]=="2" and player[1]=="A" and dealer[0]=="4") or (player[0]=="A" and player[1]=="2" and dealer[0]=="7") or (player[0]=="2" and player[1]=="A" and dealer[0]=="7") or (player[0]=="A" and player[1]=="2" and dealer[0]=="8") or (player[0]=="2" and player[1]=="A" and dealer[0]=="8") or (player[0]=="A" and player[1]=="2" and dealer[0]=="9") or (player[0]=="2" and player[1]=="A" and dealer[0]=="9") or (player[0]=="A" and player[1]=="2" and dealer[0]=="10") or (player[0]=="2" and player[1]=="A" and dealer[0]=="10") or (player[0]=="A" and player[1]=="2" and dealer[0]=="J") or (player[0]=="2" and player[1]=="A" and dealer[0]=="J") or (player[0]=="A" and player[1]=="2" and dealer[0]=="Q") or (player[0]=="2" and player[1]=="A" and dealer[0]=="Q") or (player[0]=="A" and player[1]=="2" and dealer[0]=="K") or (player[0]=="2" and player[1]=="A" and dealer[0]=="K") or (player[0]=="A" and player[1]=="2" and dealer[0]=="A") or (player[0]=="2" and player[1]=="A" and dealer[0]=="A") or (player[0]=="A" and player[1]=="3" and dealer[0]=="2") or (player[0]=="3" and player[1]=="A" and dealer[0]=="2") or (player[0]=="A" and player[1]=="3" and dealer[0]=="3") or (player[0]=="3" and player[1]=="A" and dealer[0]=="3") or (player[0]=="A" and player[1]=="3" and dealer[0]=="4") or (player[0]=="3" and player[1]=="A" and dealer[0]=="4") or (player[0]=="A" and player[1]=="3" and dealer[0]=="7") or (player[0]=="3" and player[1]=="A" and dealer[0]=="7") or (player[0]=="A" and player[1]=="3" and dealer[0]=="8") or (player[0]=="3" and player[1]=="A" and dealer[0]=="8") or (player[0]=="A" and player[1]=="3" and dealer[0]=="9") or (player[0]=="3" and player[1]=="A" and dealer[0]=="9") or (player[0]=="A" and player[1]=="3" and dealer[0]=="10") or (player[0]=="3" and player[1]=="A" and dealer[0]=="10") or (player[0]=="A" and player[1]=="3" and dealer[0]=="J") or (player[0]=="3" and player[1]=="A" and dealer[0]=="J") or (player[0]=="A" and player[1]=="3" and dealer[0]=="Q") or (player[0]=="3" and player[1]=="A" and dealer[0]=="Q") or (player[0]=="A" and player[1]=="3" and dealer[0]=="K") or (player[0]=="3" and player[1]=="A" and dealer[0]=="K") or (player[0]=="A" and player[1]=="3" and dealer[0]=="A") or (player[0]=="3" and player[1]=="A" and dealer[0]=="A") or (player[0]=="A" and player[1]=="4" and dealer[0]=="2") or (player[0]=="4" and player[1]=="A" and dealer[0]=="2") or (player[0]=="A" and player[1]=="4" and dealer[0]=="3") or (player[0]=="4" and player[1]=="A" and dealer[0]=="3") or (player[0]=="A" and player[1]=="4" and dealer[0]=="7") or (player[0]=="4" and player[1]=="A" and dealer[0]=="7") or (player[0]=="A" and player[1]=="4" and dealer[0]=="8") or (player[0]=="4" and player[1]=="A" and dealer[0]=="8") or (player[0]=="A" and player[1]=="4" and dealer[0]=="9") or (player[0]=="4" and player[1]=="A" and dealer[0]=="9") or (player[0]=="A" and player[1]=="4" and dealer[0]=="10") or (player[0]=="4" and player[1]=="A" and dealer[0]=="10") or (player[0]=="A" and player[1]=="4" and dealer[0]=="J") or (player[0]=="4" and player[1]=="A" and dealer[0]=="J") or (player[0]=="A" and player[1]=="4" and dealer[0]=="Q") or (player[0]=="4" and player[1]=="A" and dealer[0]=="Q") or (player[0]=="A" and player[1]=="4" and dealer[0]=="K") or (player[0]=="4" and player[1]=="A" and dealer[0]=="K") or (player[0]=="A" and player[1]=="4" and dealer[0]=="A") or (player[0]=="4" and player[1]=="A" and dealer[0]=="A") or (player[0]=="A" and player[1]=="5" and dealer[0]=="2") or (player[0]=="5" and player[1]=="A" and dealer[0]=="2") or (player[0]=="A" and player[1]=="5" and dealer[0]=="3") or (player[0]=="5" and player[1]=="A" and dealer[0]=="3") or (player[0]=="A" and player[1]=="5" and dealer[0]=="7") or (player[0]=="5" and player[1]=="A" and dealer[0]=="7") or (player[0]=="A" and player[1]=="5" and dealer[0]=="8") or (player[0]=="5" and player[1]=="A" and dealer[0]=="8") or (player[0]=="A" and player[1]=="5" and dealer[0]=="9") or (player[0]=="5" and player[1]=="A" and dealer[0]=="9") or (player[0]=="A" and player[1]=="5" and dealer[0]=="10") or (player[0]=="5" and player[1]=="A" and dealer[0]=="10") or (player[0]=="A" and player[1]=="5" and dealer[0]=="J") or (player[0]=="5" and player[1]=="A" and dealer[0]=="J") or (player[0]=="A" and player[1]=="5" and dealer[0]=="Q") or (player[0]=="5" and player[1]=="A" and dealer[0]=="Q") or (player[0]=="A" and player[1]=="5" and dealer[0]=="K") or (player[0]=="5" and player[1]=="A" and dealer[0]=="K") or (player[0]=="A" and player[1]=="5" and dealer[0]=="A") or (player[0]=="5" and player[1]=="A" and dealer[0]=="A") or (player[0]=="A" and player[1]=="6" and dealer[0]=="2") or (player[0]=="6" and player[1]=="A" and dealer[0]=="2") or (player[0]=="A" and player[1]=="6" and dealer[0]=="7") or (player[0]=="6" and player[1]=="A" and dealer[0]=="7") or (player[0]=="A" and player[1]=="6" and dealer[0]=="8") or (player[0]=="6" and player[1]=="A" and dealer[0]=="8") or (player[0]=="A" and player[1]=="6" and dealer[0]=="9") or (player[0]=="6" and player[1]=="A" and dealer[0]=="9") or (player[0]=="A" and player[1]=="6" and dealer[0]=="10") or (player[0]=="6" and player[1]=="A" and dealer[0]=="10") or (player[0]=="A" and player[1]=="6" and dealer[0]=="J") or (player[0]=="6" and player[1]=="A" and dealer[0]=="J") or (player[0]=="A" and player[1]=="6" and dealer[0]=="Q") or (player[0]=="6" and player[1]=="A" and dealer[0]=="Q") or (player[0]=="A" and player[1]=="6" and dealer[0]=="K") or (player[0]=="6" and player[1]=="A" and dealer[0]=="K") or (player[0]=="A" and player[1]=="6" and dealer[0]=="A") or (player[0]=="6" and player[1]=="A" and dealer[0]=="A") or (player[0]=="A" and player[1]=="7" and dealer[0]=="9") or (player[0]=="7" and player[1]=="A" and dealer[0]=="9") or (player[0]=="A" and player[1]=="7" and dealer[0]=="10") or (player[0]=="7" and player[1]=="A" and dealer[0]=="10") or (player[0]=="A" and player[1]=="7" and dealer[0]=="J") or (player[0]=="7" and player[1]=="A" and dealer[0]=="J") or (player[0]=="A" and player[1]=="7" and dealer[0]=="Q") or (player[0]=="7" and player[1]=="A" and dealer[0]=="Q") or (player[0]=="A" and player[1]=="7" and dealer[0]=="K") or (player[0]=="7" and player[1]=="A" and dealer[0]=="K") or (player[0]=="A" and player[1]=="7" and dealer[0]=="A") or (player[0]=="7" and player[1]=="A" and dealer[0]=="A") or \
+            (player[0]=="2" and player[1]=="2" and dealer[0]=="8") or (player[0]=="2" and player[1]=="2" and dealer[0]=="9") or (player[0]=="2" and player[1]=="2" and dealer[0]=="10") or (player[0]=="2" and player[1]=="2" and dealer[0]=="J") or (player[0]=="2" and player[1]=="2" and dealer[0]=="Q") or (player[0]=="2" and player[1]=="2" and dealer[0]=="K") or (player[0]=="2" and player[1]=="2" and dealer[0]=="A") or (player[0]=="3" and player[1]=="3" and dealer[0]=="8") or (player[0]=="3" and player[1]=="3" and dealer[0]=="9") or (player[0]=="3" and player[1]=="3" and dealer[0]=="10") or (player[0]=="3" and player[1]=="3" and dealer[0]=="J") or (player[0]=="3" and player[1]=="3" and dealer[0]=="Q") or (player[0]=="3" and player[1]=="3" and dealer[0]=="K") or (player[0]=="3" and player[1]=="3" and dealer[0]=="A") or (player[0]=="4" and player[1]=="4" and dealer[0]=="2") or (player[0]=="4" and player[1]=="4" and dealer[0]=="3") or (player[0]=="4" and player[1]=="4" and dealer[0]=="4") or (player[0]=="4" and player[1]=="4" and dealer[0]=="7") or (player[0]=="4" and player[1]=="4" and dealer[0]=="8") or (player[0]=="4" and player[1]=="4" and dealer[0]=="9") or (player[0]=="4" and player[1]=="4" and dealer[0]=="10") or (player[0]=="4" and player[1]=="4" and dealer[0]=="J") or (player[0]=="4" and player[1]=="4" and dealer[0]=="Q") or (player[0]=="4" and player[1]=="4" and dealer[0]=="K") or (player[0]=="4" and player[1]=="4" and dealer[0]=="A") or (player[0]=="5" and player[1]=="5" and dealer[0]=="10") or (player[0]=="5" and player[1]=="5" and dealer[0]=="J") or (player[0]=="5" and player[1]=="5" and dealer[0]=="Q") or (player[0]=="5" and player[1]=="5" and dealer[0]=="K") or (player[0]=="5" and player[1]=="5" and dealer[0]=="A") or (player[0]=="6" and player[1]=="6" and dealer[0]=="7") or (player[0]=="6" and player[1]=="6" and dealer[0]=="8") or (player[0]=="6" and player[1]=="6" and dealer[0]=="9") or (player[0]=="6" and player[1]=="6" and dealer[0]=="10") or (player[0]=="6" and player[1]=="6" and dealer[0]=="J") or (player[0]=="6" and player[1]=="6" and dealer[0]=="Q") or (player[0]=="6" and player[1]=="6" and dealer[0]=="K") or (player[0]=="6" and player[1]=="6" and dealer[0]=="A") or (player[0]=="7" and player[1]=="7" and dealer[0]=="8") or (player[0]=="7" and player[1]=="7" and dealer[0]=="9") or (player[0]=="7" and player[1]=="7" and dealer[0]=="10") or (player[0]=="7" and player[1]=="7" and dealer[0]=="J") or (player[0]=="7" and player[1]=="7" and dealer[0]=="Q") or (player[0]=="7" and player[1]=="7" and dealer[0]=="K") or (player[0]=="7" and player[1]=="7" and dealer[0]=="A")):
+        print("basic strategy says hit")
+        return
+        
+    return
+
+def stay(dealer, card):
+    #the dealer will keep drawing cards until they reach 17 or bust
+    while convert_hand_to_value(dealer)<17:
+        dealer.append(deck[card])
+        card = next_card(card)
+    
+    return card
+        
+def hit_again(player, card):
+    #this function is used whenever the player wants to hit again after already hitting
+    player.append(deck[card])
+    card = next_card(card)
+    
+    return card
+    
+def hit(player, dealer, card):
+    #player is given another card
+    player.append(deck[card])
+    card = next_card(card)
+    
+    #if player has not busted, player is presented with more options
+    while convert_hand_to_value(player)<=21:
+        print_cards_dealer_down(player, dealer)
+        basic_strategy(player, dealer)
+        print("")
+        decision = str(input("do you want to (1)hit, (2)stay \n"))
+        print("")
+        if decision == "1":
+            card = hit_again(player, card)
+            print_cards_dealer_down(player, dealer)
+            basic_strategy(player, dealer)
+            continue
+        if decision == "2":
+            card = stay(dealer, card)
+            break
+        
+    return card
+
+def double_down(player, dealer, card):
+    #player is given one additional card and that is it. dealer draws until 17 or bust
+    player.append(deck[card])
+    card = next_card(card)
+    
+    if convert_hand_to_value(player)<=21:
+        while convert_hand_to_value(dealer)<17:
+            dealer.append(deck[card])
+            card = next_card(card)
+    return card
+
+def split(player_deck_1, player_deck_2, dealer, card):
+    #users deck splits into two and they are given another card for each deck
+    player_deck_1.append(deck[card])
+    card = next_card(card)
+    player_deck_2.append(deck[card])
+    card = next_card(card)
+    
+    #prints out both players decks and the dealers deck face down
+    print_cards_split_dealer_down(player_deck_1, player_deck_2, dealer)
+    basic_strategy(player_deck_1, dealer)
+    
+    #controls moves for the players first deck based on the input
+    while convert_hand_to_value(player_deck_1)<=21:
+        print("")
+        decision = str(input("On your first deck, do you want to (1)hit, (2)stay, (3)double down \n"))
+        print("")
+        if decision == "1":
+            card = hit_again(player_deck_1, card)
+            print_cards_split_dealer_down(player_deck_1, player_deck_2, dealer)
+            basic_strategy(player_deck_1, dealer)
+        if decision == "2":
+            card = stay(dealer, card)
+            break
+        if decision == "3":
+            card = double_down(player_deck_1, dealer, card)
+            break
+        
+    #prints cards for the player and dealer at this time of the round
+    print_cards_split_dealer_down(player_deck_1, player_deck_2, dealer)
+    basic_strategy(player_deck_2, dealer)
+    
+    #controls moves for the players second deck based on the input
+    while convert_hand_to_value(player_deck_2)<=21:
+        print("")
+        decision = str(input("On your second deck, do you want to (1)hit, (2)stay, (3)double down \n"))
+        print("")
+        if decision == "1":
+            card = hit_again(player_deck_2, card)
+            print_cards_split_dealer_down(player_deck_1, player_deck_2, dealer)
+            basic_strategy(player_deck_2, dealer)
+            continue
+        if decision == "2":
+            card = stay(dealer, card)
+            break
+        if decision == "3":
+            card = double_down(player_deck_2, dealer, card)
+            break
+            
+    return card
+
+def next_card(card):
+    card+=1     #every time a card is drawn, a new card becomes the top of the deck essentially
+    return card
+    
+def play_game():
+    card=0
+    count=0
+    decks=0
+    true_count=0
+    bankroll=10000      #we start out with $10,000
+    
+    play = True
+    while play == True:
+        while card<256:         #this game contains 6 decks of cards, they are shuffled and then one deck of cards will not be used before the dealer shuffles all 6 decks again
+            print("----------------------------------------------------------------")
+            print("your current bankroll is: $"+ str(bankroll))      #prints bankroll
+            if true_count > 2:
+                print("strategy will say bet $" + str((round(true_count-1,0)*200)))
+            else:
+                print("strategy will say bet $200")
+            if true_count < -2:
+                print("the table is cold, you should leave after this hand")
+            if true_count > 2:
+                print("this table is hot")
+            while True:     #if input doesnt equal a valid number, user is asked again
+                try:
+                    bet=int(input("how much would you like to bet?\n"))
+                    while bet <= 0 or bet >= bankroll:
+                        print("")
+                        bet=int(input("how much would you like to bet?\n"))
+                        print("")
+                    break
+                except ValueError:
+                    print("")
+                    print("enter a value between 1 and your bankroll")
+                    print("")
+            
+            #this is the initial cards given out during a hand
+            player = [deck[card]]
+            card = next_card(card)
+            dealer = [deck[card]]
+            card = next_card(card)
+            player.append(deck[card])
+            card = next_card(card)
+            dealer.append(deck[card])
+            card = next_card(card)
+            
+            #checks to see if there is a blackjack at the beginning of hand, no insurance. also if round ends, true count is shown
+            if both_blackjack_check(player, dealer) == True:
+                count = the_count(player, dealer, count, card)
+                print("running count: "+str(count))
+                decks = decks_remaining(card)
+                print("decks remaining: "+str(decks))
+                true_count = count/decks
+                print("the true count is :"+str(round(true_count,0))) 
+                continue
+            elif player_blackjack_check(player, dealer) == True:
+                count = the_count(player, dealer, count, card)
+                print("running count: "+str(count))
+                decks = decks_remaining(card)
+                print("decks remaining: "+str(decks))
+                true_count = count/decks
+                print("the true count is :"+str(round(true_count,0))) 
+                bankroll=int((bet*1.5)+bankroll)
+                continue  
+            elif dealer_blackjack_check(player, dealer) == True:
+                count = the_count(player, dealer, count, card)
+                print("running count: "+str(count))
+                decks = decks_remaining(card)
+                print("decks remaining: "+str(decks))
+                true_count = count/decks
+                print("the true count is :"+str(round(true_count,0))) 
+                bankroll-=bet 
+                continue
+            
+            #prints players cards and dealers cards with one face down
+            print_cards_dealer_down(player, dealer)
+            basic_strategy(player, dealer)
+            #asks user what their move is, if an invalid input is put down, the user is asked again
+            decision = str(input("do you want to (1)hit, (2)stay, (3)double down, or (4)split \n"))
+            while decision != "1" and decision != "2" and decision !="3" and not (decision == "4" and (player[0]=="2" and player[1]=="2") or (player[0]=="3" and player[1]=="3") or (player[0]=="4" and player[1]=="4") or (player[0]=="5" and player[1]=="5") or (player[0]=="6" and player[1]=="6") or (player[0]=="7" and player[1]=="7") or (player[0]=="8" and player[1]=="8") or (player[0]=="9" and player[1]=="9") or (player[0]=="10" and player[1]=="10") or (player[0]=="J" and player[1]=="J") or (player[0]=="Q" and player[1]=="Q") or (player[0]=="K" and player[1]=="K") or (player[0]=="A" and player[1]=="A")):
+                print_cards_dealer_down(player, dealer)
+                basic_strategy(player, dealer)
+                decision = str(input("please try again. do you want to (1)hit, (2)stay, (3)double down, or (4)split \n"))
+                
+            #thid controls the move inputted by the user
+            if decision == "1":
+                card = hit(player, dealer, card)
+            elif decision == "2":
+                card = stay(dealer, card)  
+            elif decision == "3":
+                card = double_down(player, dealer, card) 
+            elif decision == "4" and (player[0]=="2" and player[1]=="2") or (player[0]=="3" and player[1]=="3") or (player[0]=="4" and player[1]=="4") or (player[0]=="5" and player[1]=="5") or (player[0]=="6" and player[1]=="6") or (player[0]=="7" and player[1]=="7") or (player[0]=="8" and player[1]=="8") or (player[0]=="9" and player[1]=="9") or (player[0]=="10" and player[1]=="10") or (player[0]=="J" and player[1]=="J") or (player[0]=="Q" and player[1]=="Q") or (player[0]=="K" and player[1]=="K") or (player[0]=="A" and player[1]=="A"):
+                player_deck_1=[player[0]]
+                player_deck_2=[player[1]]
+                card = split(player_deck_1, player_deck_2, dealer, card)
+            
+            #updates our bankroll based on if we won or lost
+            if decision != "4":  
+                print_cards_all(player, dealer)
+                win_or_lose(player, dealer)
+                bankroll = bankroll_manager(player, dealer, decision, bankroll, bet)
+            if decision == "4":
+                print_cards_split(player_deck_1, player_deck_2, dealer)
+                win_or_lose_split(player_deck_1, player_deck_2, dealer, decision, bankroll, bet)
+                bankroll = bankroll_manager(player_deck_1, dealer, decision, bankroll, bet)
+                bankroll = bankroll_manager(player_deck_2, dealer, decision, bankroll, bet)
+                count = the_count(player_deck_1, dealer, count, card)
+                count = the_count(player_deck_2, [7, 7], count, card)
+                print("running count: "+str(count))
+                decks = decks_remaining(card)
+                print("decks remaining: "+str(decks))
+                true_count = count/decks
+                print("the true count is :"+str(round(true_count,0))) 
+            
+            #true count is updated after every round
+            count = the_count(player, dealer, count, card)
+            print("running count: "+str(count))
+            decks = decks_remaining(card)
+            print("decks remaining: "+str(decks))
+            true_count = count/decks
+            print("the true count is :"+str(round(true_count,0)))    
+            
+            print("")
+            again=str(input("do you want to play again, type (1)yes or (2)no \n"))
+            if str(again) == "2":
+                return
+                
+        print("Thanks for playing :)")
+        return
+    return
+
+play_game()
