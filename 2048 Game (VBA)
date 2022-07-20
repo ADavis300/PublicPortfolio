@@ -1,0 +1,362 @@
+Function GenerateBoard()
+
+    Columns("A:AC").Select
+    Selection.ColumnWidth = 13.57
+    Rows("1:80").Select
+    Selection.RowHeight = 75
+    Range("F2:I5").UnMerge
+    Range("F2:I5").Select
+    Selection.ClearContents
+    ActiveWindow.Zoom = 80
+    Selection.borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.borders(xlInsideVertical)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.borders(xlInsideHorizontal)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    
+    Range("F2: M5").Select
+    Selection.HorizontalAlignment = xlCenter
+    Selection.VerticalAlignment = xlCenter
+    Selection.Font.Size = 23
+    Range("F2: I5").Select
+    Selection.Interior.Color = RGB(235, 235, 235)
+    Selection.Font.Color = RGB(0, 0, 0)
+    Range("L4").Select
+    ActiveCell.Offset(-1, 0) = "UP"
+    ActiveCell.Offset(1, 0) = "DOWN"
+    ActiveCell.Offset(0, -1) = "LEFT"
+    ActiveCell.Offset(0, 1) = "RIGHT"
+    ActiveWindow.SmallScroll ToRight:=-3
+    
+    Dim RNG As Range
+    Set RNG = Range("F2:I5")
+
+    Dim randomCell As Long
+    randomCell = Int(Rnd * RNG.Cells.Count) + 1
+    
+    While RNG.Cells(randomCell) <> ""
+        randomCell = Int(Rnd * RNG.Cells.Count) + 1
+    Wend
+    
+    RNG.Cells(randomCell).Value = 2
+    RNG.Cells(randomCell).Interior.Color = RGB(230, 230, 230)
+    
+End Function
+
+Sub TwentyFortyEight()
+
+    Call GenerateBoard
+
+End Sub
+
+Function Loss()
+    
+    counter = 0
+    
+    'loop to control which row we are in. starts on bottom row and ends one row from the top
+    For r = 5 To 2 Step -1
+        
+        'loop to control which column we look at in the selected row. we start on the right most column of the row
+        For c = 9 To 6 Step -1
+            
+            If Cells(r, c) = "" Then
+                counter = counter + 1
+            End If
+            
+        'go to next column in row
+        Next
+        
+    'go to next row
+    Next
+    
+    If counter = 0 Then
+        
+        Range("F2:I5").Interior.Color = RGB(225, 225, 225)
+        Range("F2:I5").ClearContents
+        Range("F2:I5").merge
+        Range("F2:I5") = "You Lose"
+        Range("F2:I5").Font.Size = 36
+        
+    End If
+
+End Function
+
+
+Function NumColors()
+
+    'loop to control which row we are in. starts on bottom row and ends one row from the top
+        For r = 5 To 2 Step -1
+            
+            'loop to control which column we look at in the selected row. we start on the right most column of the row
+            For c = 9 To 6 Step -1
+                
+                If Cells(r, c) = "" Then
+                    Cells(r, c).Interior.Color = RGB(169, 169, 169)
+                ElseIf Cells(r, c) = 2 Then
+                    Cells(r, c).Interior.Color = RGB(230, 230, 230)
+                ElseIf Cells(r, c) = 4 Then
+                    Cells(r, c).Interior.Color = RGB(250, 250, 210)
+                ElseIf Cells(r, c) = 8 Then
+                    Cells(r, c).Interior.Color = RGB(248, 169, 58)
+                ElseIf Cells(r, c) = 16 Then
+                    Cells(r, c).Interior.Color = RGB(255, 127, 80)
+                ElseIf Cells(r, c) = 32 Then
+                    Cells(r, c).Interior.Color = RGB(255, 100, 70)
+                ElseIf Cells(r, c) = 64 Then
+                    Cells(r, c).Interior.Color = RGB(255, 75, 40)
+                ElseIf Cells(r, c) = 128 Then
+                    Cells(r, c).Interior.Color = RGB(255, 236, 135)
+                ElseIf Cells(r, c) = 256 Then
+                    Cells(r, c).Interior.Color = RGB(255, 255, 120)
+                ElseIf Cells(r, c) = 512 Then
+                    Cells(r, c).Interior.Color = RGB(255, 250, 100)
+                ElseIf Cells(r, c) = 1024 Then
+                    Cells(r, c).Interior.Color = RGB(255, 250, 70)
+                ElseIf Cells(r, c) = 2048 Then
+                    Cells(r, c).Interior.Color = RGB(255, 255, 20)
+                ElseIf Cells(r, c) = 4096 Then
+                    Cells(r, c).Interior.Color = RGB(128, 191, 255)
+                Else
+                End If
+                
+            'go to next column in row
+            Next
+            
+        'go to next row
+        Next
+
+End Function
+
+
+Function NewNum()
+    
+    Dim RNG As Range
+    Set RNG = Range("F2:I5")
+
+    Dim randomCell As Long
+    randomCell = Int(Rnd * RNG.Cells.Count) + 1
+    
+    While RNG.Cells(randomCell) <> ""
+        randomCell = Int(Rnd * RNG.Cells.Count) + 1
+    Wend
+    
+    RNG.Cells(randomCell).Value = 2
+    
+End Function
+
+
+Public Sub Worksheet_SelectionChange(ByVal Target As Range)
+    
+    'establish variables for rows and columns
+    Dim c As Integer
+    Dim r As Integer
+    
+    'if "up" is selected
+    If ActiveCell = Range("L3") Then
+        
+        'resets position
+        Range("L4").Select
+        
+        'these next steps will need to be repeated a few times
+        For i = 0 To 2 Step 1
+        
+            'loop to control which row we are in. starts on bottom row and ends one row from the top
+            For r = 3 To 5 Step 1
+                
+                'loop to control which column we look at in the selected row. we start on the right most column of the row
+                For c = 6 To 9 Step 1
+                    
+                    'if the cell above is empty, move it up
+                    If Cells(r - 1, c) = "" Then
+                        
+                        Cells(r - 1, c) = Cells(r, c)
+                        Cells(r, c) = ""
+                        
+                    'if the cell above has the same number, add them together
+                    ElseIf Cells(r - 1, c) = Cells(r, c) Then
+                        
+                        Cells(r - 1, c) = Cells(r - 1, c) + Cells(r, c)
+                        Cells(r, c) = ""
+                        
+                    End If
+                    
+                'go to next column in row
+                Next
+                
+            'go to next row
+            Next
+            
+        'repeat these steps
+        Next
+        
+        'PUT RANDOM 2 OR 4 ON THE BOARD
+        Call NewNum
+        
+    End If
+    
+    'if "down" is selected
+    If ActiveCell = Range("L5") Then
+        
+        'resets position
+        Range("L4").Select
+        
+        'these next steps will need to be repeated a few times
+        For i = 0 To 2 Step 1
+        
+            'loop to control which row we are in. starts on bottom row and ends one row from the top
+            For r = 4 To 2 Step -1
+                
+                'loop to control which column we look at in the selected row. we start on the right most column of the row
+                For c = 9 To 6 Step -1
+                    
+                    'if the cell below is empty, move it down
+                    If Cells(r + 1, c) = "" Then
+                        
+                        Cells(r + 1, c) = Cells(r, c)
+                        Cells(r, c) = ""
+                        
+                    'if the cell above has the same number, add them together
+                    ElseIf Cells(r + 1, c) = Cells(r, c) Then
+                        
+                        Cells(r + 1, c) = Cells(r + 1, c) + Cells(r, c)
+                        Cells(r, c) = ""
+                        
+                    End If
+                    
+                'go to next column in row
+                Next
+                
+            'go to next row
+            Next
+            
+        'repeat these steps
+        Next
+        
+        'PUT RANDOM 2 OR 4 ON THE BOARD
+        Call NewNum
+        
+    End If
+    
+    'if "left" is selected
+        If ActiveCell = Range("K4") Then
+        
+        'resets position
+        Range("L4").Select
+        
+        'these next steps will need to be repeated a few times
+        For i = 0 To 2 Step 1
+        
+            'loop to control which row we are in. starts on bottom row and ends one row from the top
+            For c = 7 To 9 Step 1
+                
+                'loop to control which column we look at in the selected row. we start on the right most column of the row
+                For r = 2 To 5 Step 1
+                    
+                    'if the cell left is empty, move it left
+                    If Cells(r, c - 1) = "" Then
+                        
+                        Cells(r, c - 1) = Cells(r, c)
+                        Cells(r, c) = ""
+                        
+                    'if the cell left has the same number, add them together
+                    ElseIf Cells(r, c - 1) = Cells(r, c) Then
+                        
+                        Cells(r, c - 1) = Cells(r, c - 1) + Cells(r, c)
+                        Cells(r, c) = ""
+                        
+                    End If
+                    
+                'go to next column in row
+                Next
+                
+            'go to next row
+            Next
+            
+        'repeat these steps
+        Next
+        
+        'PUT RANDOM 2 OR 4 ON THE BOARD
+        Call NewNum
+        
+    End If
+    
+    'if "right" is selected
+    If ActiveCell = Range("M4") Then
+        
+        'resets position
+        Range("L4").Select
+        
+        'these next steps will need to be repeated a few times
+        For i = 0 To 2 Step 1
+        
+            'loop to control which row we are in. starts on bottom row and ends one row from the top
+            For c = 8 To 6 Step -1
+                
+                'loop to control which column we look at in the selected row. we start on the right most column of the row
+                For r = 5 To 2 Step -1
+                    
+                    'if the cell left is empty, move it left
+                    If Cells(r, c + 1) = "" Then
+                        
+                        Cells(r, c + 1) = Cells(r, c)
+                        Cells(r, c) = ""
+                        
+                    'if the cell left has the same number, add them together
+                    ElseIf Cells(r, c + 1) = Cells(r, c) Then
+                        
+                        Cells(r, c + 1) = Cells(r, c + 1) + Cells(r, c)
+                        Cells(r, c) = ""
+                        
+                    End If
+                    
+                'go to next column in row
+                Next
+                
+            'go to next row
+            Next
+            
+        'repeat these steps
+        Next
+        
+        'PUT RANDOM 2 OR 4 ON THE BOARD
+        Call NewNum
+        
+    End If
+    
+    Call Loss
+    Call NumColors
+
+End Sub
