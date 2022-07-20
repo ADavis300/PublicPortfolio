@@ -1,0 +1,337 @@
+Function MakeGrid()
+    Range("G10") = "In Progress"
+    Range("G10").Select
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorAccent4
+        .TintAndShade = 0.599993896298105
+        .PatternTintAndShade = 0
+    End With
+    'making the grid for minesweeper
+    Columns("A:XW").Select
+    Selection.ColumnWidth = 5
+    Rows("1:250").Select
+    Selection.RowHeight = 30
+    
+    Cells(75, 75).Select
+    Selection.Copy
+    Range("L4:xx150").Select
+    Selection.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, _
+        SkipBlanks:=False, Transpose:=False
+    Application.CutCopyMode = False
+    Selection.Clear
+    
+    Range(Cells(6, 15), Cells(6 + Range("G19") - 1, 15 + Range("G19") - 1)).Select
+    Range(Cells(6, 15), Cells(6 + Range("G19") - 1, 15 + Range("G19") - 1)).Clear
+    Range(Cells(6, 15), Cells(6 + Range("G19") - 1, 15 + Range("G19") - 1)).Interior.Color = RGB(192, 192, 192)
+    Range(Cells(6, 15), Cells(6 + Range("G19") - 1, 15 + Range("G19") - 1)).Font.Color = RGB(192, 192, 192)
+    Range(Cells(6, 15), Cells(6 + Range("G19") - 1, 15 + Range("G19") - 1)).Font.Size = 28
+    
+    
+    Selection.borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.borders(xlInsideVertical)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.borders(xlInsideHorizontal)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    Range("L4:AO50").Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+        .Font.bold = True
+    End With
+    'grid complete
+
+
+End Function
+
+Function MakeMines()
+
+    'making the bombs
+    Dim RNG As Range
+    Set RNG = Range("O6", Cells(5 + Range("G19"), 14 + Range("G19")))
+
+    Dim randomCell As Long
+    randomCell = Int(Rnd * RNG.Cells.Count) + 1
+
+    For x = 1 To Range("G14")
+        RNG.Cells(randomCell).Select
+        randomCell = Int(Rnd * RNG.Cells.Count) + 1
+        While ActiveCell = 9
+            randomCell = Int(Rnd * RNG.Cells.Count) + 1
+            RNG.Cells(randomCell).Select
+        Wend
+        RNG.Cells(randomCell).Value = 9
+    Next x
+    'bombs have been made
+
+End Function
+
+Function MakeValues()
+    
+    Range("N5").Select
+    r = 1
+    c = 1
+    R1 = ActiveCell.Row: R2 = ActiveCell.Column
+    For i = 0 To ((Range("G19") * (Range("G19"))) - 1)
+        counter = 0
+        
+        'when you run into the end of the grid. go down one and back to the beginning of the left side
+        If i / (Range("G19")) = r Then
+           r = r + 1
+        End If
+        
+        
+        'is responsible for creating values by checking adjacent cells to look for mines
+        If Cells((R1 + r) - 1, (R2 + c) - 1) = 9 Then
+            counter = counter + 1
+        End If
+        If Cells((R1 + r) - 1, (R2 + c)) = 9 Then
+            counter = counter + 1
+        End If
+        If Cells((R1 + r) - 1, (R2 + c) + 1) = 9 Then
+            counter = counter + 1
+        End If
+        If Cells((R1 + r), (R2 + c) - 1) = 9 Then
+            counter = counter + 1
+        End If
+        If Cells((R1 + r), (R2 + c) + 1) = 9 Then
+            counter = counter + 1
+        End If
+        If Cells((R1 + r) + 1, (R2 + c) - 1) = 9 Then
+            counter = counter + 1
+        End If
+        If Cells((R1 + r) + 1, (R2 + c)) = 9 Then
+            counter = counter + 1
+        End If
+        If Cells((R1 + r) + 1, (R2 + c) + 1) = 9 Then
+            counter = counter + 1
+        End If
+        
+        'If the cell is a mine then it is ignorned, otherwise it recieves a value
+        If Cells(R1 + r, R2 + c) = 9 Then
+            c = c + 1
+        Else
+            Cells(R1 + r, R2 + c) = counter
+            
+            If Cells(R1 + r, R2 + c) = 0 Then
+            Cells(R1 + r, R2 + c) = "x"
+            End If
+            
+            c = c + 1
+        End If
+        
+        If c > Range("G19") Then
+                c = 1
+        End If
+        
+    Next i
+    
+    Range("G10") = "Done"
+    Range("G10").Interior.Color = RGB(255, 255, 255)
+    
+End Function
+
+Sub Minesweeper()
+
+    Call MakeGrid
+    Call MakeMines
+    Call MakeValues
+    Range("A1").Select
+    
+
+End Sub
+
+Sub CheckWinMS()
+
+    Dim RNG As Range
+    Set RNG = Range("O6", Cells(5 + Range("G19"), 14 + Range("G19")))
+    Dim randomCell As Long
+    randomCell = Int(Rnd * RNG.Cells.Count) + 1
+    r = 1: c = 1: f = 0: g = 0: h = 0
+    R1 = 5: R2 = 14
+    counter = 0
+    
+    For i = 0 To ((Range("G19") * (Range("G19"))) - 1)
+        
+        'when you run into the end of the grid. go down one and back to the beginning of the left side
+        If i / (Range("G19")) = r Then
+           r = r + 1
+        End If
+        
+        If c > Range("G19") Then
+            c = 1
+        End If
+        
+        If Cells(R1 + r, R2 + c).Interior.Color = RGB(192, 192, 192) Then
+            counter = counter + 1
+        End If
+        c = c + 1
+        
+    Next i
+    
+    If counter = Range("G14") Then
+        Range("G10") = "You Win"
+        Range("G10").Select
+        With Selection.Interior
+            .Pattern = xlSolid
+            .PatternColorIndex = xlAutomatic
+            .ThemeColor = xlThemeColorAccent6
+            .TintAndShade = 0.599993896298105
+            .PatternTintAndShade = 0
+        End With
+    Else
+        Range("G10") = "Keep Trying"
+        Range("G10").Select
+        With Selection.Interior
+            .Pattern = xlSolid
+            .PatternColorIndex = xlAutomatic
+            .ThemeColor = xlThemeColorAccent4
+            .TintAndShade = 0.599993896298105
+            .PatternTintAndShade = 0
+        End With
+    End If
+    
+    If Range("G10") = "You Win" Then
+        For x = 1 To RNG.Cells.Count
+            f = Int(Rnd * 300): g = Int(Rnd * 300): h = Int(Rnd * 300)
+            randomCell = Int(Rnd * RNG.Cells.Count) + 1
+            While RNG.Cells(randomCell).Interior.Color <> RGB(192, 192, 192) And RNG.Cells(randomCell).Interior.Color <> RGB(255, 255, 255)
+                randomCell = Int(Rnd * RNG.Cells.Count) + 1
+            Wend
+            RNG.Cells(randomCell).Interior.Color = RGB(f, g, h)
+            RNG.Cells(randomCell).Font.Color = RGB(f, g, h)
+        Next x
+        
+        RNG.Cells.ClearContents
+        RNG.Cells.merge
+        RNG.Cells.HorizontalAlignment = xlCenter
+        RNG.Cells.VerticalAlignment = xlCenter
+        RNG.Cells.Font.Size = 30
+        RNG.Cells.Interior.Color = RGB(255, 255, 255)
+        RNG.Cells.Font.Color = RGB(0, 0, 0)
+        RNG.Cells = "You Win"
+        
+    End If
+    
+End Sub
+
+Public Sub Worksheet_SelectionChange(ByVal Target As Range)
+    
+    Dim R1 As Long, R2 As Long
+    R1 = Target.Row: R2 = Target.Column
+    
+    If Cells(R1, R2) = 1 Then
+        Target.Interior.Color = RGB(255, 255, 255)
+        Target.Font.Color = RGB(0, 0, 250)
+    ElseIf Cells(R1, R2) = 2 Then
+        Target.Interior.Color = RGB(255, 255, 255)
+        Target.Font.Color = RGB(0, 150, 0)
+    ElseIf Cells(R1, R2) = 3 Then
+        Target.Interior.Color = RGB(255, 255, 255)
+        Target.Font.Color = RGB(240, 0, 0)
+    ElseIf Cells(R1, R2) = 4 Then
+        Target.Interior.Color = RGB(255, 255, 255)
+        Target.Font.Color = RGB(230, 0, 230)
+    ElseIf Cells(R1, R2) = 5 Or Cells(R1, R2) = 6 Or Cells(R1, R2) = 7 Or Cells(R1, R2) = 8 Then
+        Target.Interior.Color = RGB(255, 255, 255)
+        Target.Font.Color = RGB(160, 0, 0)
+    ElseIf Cells(R1, R2) = "x" Then
+        Cells(R1, R2) = ""
+        Target.Interior.Color = RGB(255, 255, 255)
+        Target.Font.Color = RGB(255, 255, 255)
+        Cells(R1 - 1, R2 - 1).Select
+        Cells(R1 - 1, R2).Select
+        Cells(R1 - 1, R2 + 1).Select
+        Cells(R1 + 1, R2 - 1).Select
+        Cells(R1 + 1, R2).Select
+        Cells(R1 + 1, R2 + 1).Select
+        Cells(R1, R2 + 1).Select
+        Cells(R1, R2 - 1).Select
+        Cells(R1 - 1, R2 - 1).Select
+        Cells(R1 - 1, R2).Select
+        Cells(R1 - 1, R2 + 1).Select
+        Cells(R1 + 1, R2 - 1).Select
+        Cells(R1 + 1, R2).Select
+        Cells(R1 + 1, R2 + 1).Select
+        Cells(R1, R2 + 1).Select
+        Cells(R1, R2 - 1).Select
+        Cells(1, 1).Select
+    ElseIf Cells(R1, R2) = 9 Then
+        If Range("G10") = "Done" Or Range("G10") = "Keep Trying" Then
+        
+            Range("G10").Interior.Color = RGB(255, 130, 130)
+            
+            'Start of Gameover sequence
+            R1 = 5: R2 = 14
+            
+            r = 1
+            c = 1
+            For i = 0 To ((Range("G19") * (Range("G19"))) - 1)
+                
+                'when you run into the end of the grid. go down one and back to the beginning of the left side
+                If i / (Range("G19")) = r Then
+                   r = r + 1
+                End If
+                
+                If c > Range("G19") Then
+                    c = 1
+                End If
+                
+                'If the cell is a mine then it is ignorned, otherwise it recieves a value
+                If Cells(R1 + r, R2 + c) = 9 Then
+                    Cells(R1 + r, R2 + c).Interior.Color = RGB(255, 0, 0)
+                    Cells(R1 + r, R2 + c).Font.Color = RGB(255, 0, 0)
+                End If
+                c = c + 1
+                
+            Next i
+            
+            Range("G10") = "You Lose"
+            'end of Gameover sequence
+            
+        End If
+        
+    End If
+    
+End Sub
